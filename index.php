@@ -348,15 +348,7 @@ $cp=new CP();
 		</div>
 
 		<div class="mdui-col-xs-12 mdui-col-sm-4 mdui-col-md-6">
-			div2
-		</div>
-
-		<div class="mdui-col-xs-12 mdui-col-sm-4 mdui-col-md-3">
-			div3
-		</div>
-
-	</div>
-<!--十个最新 -->
+			<!--十个最新 -->
 <div class="mdui-panel" mdui-panel>
 <div class="mdui-panel-item">
 	<ul class="mdui-list">
@@ -371,6 +363,14 @@ $cp=new CP();
 	</ul>
 </div>
 </div>
+		</div>
+
+		<div class="mdui-col-xs-12 mdui-col-sm-4 mdui-col-md-3">
+			div3
+		</div>
+
+	</div>
+
 	<!--<div style="height:100vh; width:100%">&nbsp;</div> 占位 -->
 
 	<div class="mdui-color-grey-700 mdui-p-t-4">
