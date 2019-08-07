@@ -13,6 +13,7 @@ class User
     }
     public static function checkLogin()
     {
+        if (DEV) return DEV;
         if (isset($_COOKIE['userID']) || $_COOKIE['userID'] != 0) {
             self::$userID = $_COOKIE['userID'];
             if (getUserInfo()['checkKey'] == $_COOKIE['ckk']) {
@@ -45,7 +46,7 @@ class CP
     }
     public function GetRecentUpload($num = 15)
     {
-        $db = new DB('Upload', 'json', self::$config['database']['link']);
+        $db = new DB('Core', 'json', self::$config['database']['link']);
         $datas = $db->getData(array(), $num);
         return $datas;
     }
