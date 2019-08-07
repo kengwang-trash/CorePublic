@@ -1,13 +1,17 @@
 <?php
 include_once('./config.php');
+define('DEV', true);
+
 class User
 {
     private static $userID;
     public function __construct()
     {
-        checkLogin();
+        if (!checkLogin() && !DEV){
+            return false;
+        }
     }
-    public function checkLogin()
+    public static function checkLogin()
     {
         if (isset($_COOKIE['userID']) || $_COOKIE['userID'] != 0) {
             self::$userID = $_COOKIE['userID'];
