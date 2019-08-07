@@ -356,7 +356,17 @@ $cp=new CP();
 		$c=$cp->GetRecentUpload();		
 		foreach ($c as $item){?>
 	<li class="mdui-list-item mdui-ripple">
-    <i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
+
+		<?php
+		if ($item['type']=='PC'){
+			echo '<i class="mdui-list-item-icon mdui-icon material-icons">desktop_windows</i>';
+		}elseif ($item['type']=='PE') {
+			echo '<i class="mdui-list-item-icon mdui-icon material-icons">phone_android</i>';
+		}else{
+			echo '<i class="mdui-list-item-icon"></i>';
+		}
+		?>
+	</i>
     <div class="mdui-list-item-content"><?php echo $item['name'] ?></div>
   </li>
 		<?php } ?>

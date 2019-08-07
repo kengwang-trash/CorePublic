@@ -2,7 +2,7 @@
 include_once('./config.php');
 class User
 {
-    private $userID;
+    private static $userID;
     public function __construct()
     {
         checkLogin();
@@ -22,20 +22,26 @@ class User
         }
         return false;
     }
-    public function getUserInfo($userID = self::$userID)
+    public function getUserInfo($userID=null)
     {
+        if ($userID==null){
+            $userID=self::$userID;
+        }
         $db = new DB('User');
         return $db->getData()[$userID];
     }
 }
 class CP
 {
-    private $config = $conf;
+    private static $config;
     public function __construct()
-    { }
+    {
+        global $conf;
+        self::$config=$conf;
+    }
     public function GetRecentUpload($num = 15)
     {
-        $db = new DB('Upload', self::$config['database']['type'], self::$config['database']['link']);
+        $db = new DB('Upload', 'json', self::$config['database']['link']);
         $datas = $db->getData(array(), $num);
         return $datas;
     }
@@ -47,14 +53,14 @@ class ErrorHandler
 }
 class DB
 {
-    private $url;
-    private $datas;
+    private static $url;
+    private static $datas;
     public function __construct($database, $dbtype = 'json', $dblink = './data/database/')
     {
         if ($dbtype == 'json') {
             self::$url = $dblink . '/' . $database . '.json';
             $json = file_get_contents(self::$url);
-            $json=self::StrEncrypt($json,'ENCODE');
+            $json=self::StrEncrypt($json,'DECODE');
             self::$datas = json_decode($json, true);
         } else {
             echo 'Unsupport Database Type ' . $dbtype;
@@ -63,6 +69,7 @@ class DB
     public function getData($where = array(), $limit = -1, $sortby = 'none')
     {
         $result = self::$datas;
+
         if (!$where == array() && count($where) > 0) {
             $realres = array();
             foreach ($where as $search) {
@@ -75,8 +82,9 @@ class DB
             }
             $result = $realres;
         }
+
         if ($sortby != 'none') $result = self::SortArray($result, $sortby);
-        if ($limit != -1) $result = array_slice($result, $limit - 1);
+        if ($limit != -1) $result = array_slice($result,0, $limit - 1);
         return $result;
     }
 
