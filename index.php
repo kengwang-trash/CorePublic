@@ -1,3 +1,7 @@
+<?php 
+include_once './function.php';
+$cp=new CP();
+?>
 <!DOCTYPE html>
 <html>
 
@@ -205,7 +209,7 @@
 			width: 10px;
 			height: 10px;
 			-webkit-animation-delay: 2s;
-			animation-delay: 2s; 
+			animation-delay: 2s;
 			-webkit-animation-duration: 40s;
 			animation-duration: 40s;
 			background-color: rgba(255, 255, 255, 0.3);
@@ -352,9 +356,22 @@
 		</div>
 
 	</div>
-
-
-	<div style="height:100vh; width:100%">&nbsp;</div><!-- 占位 -->
+<!--十个最新 -->
+<div class="mdui-panel" mdui-panel>
+<div class="mdui-panel-item">
+	<ul class="mdui-list">
+		<?php
+		$c=$cp->GetRecentUpload();		
+		foreach ($c as $item){?>
+	<li class="mdui-list-item mdui-ripple">
+    <i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
+    <div class="mdui-list-item-content"><?php echo $item['name'] ?></div>
+  </li>
+		<?php } ?>
+	</ul>
+</div>
+</div>
+	<!--<div style="height:100vh; width:100%">&nbsp;</div> 占位 -->
 
 	<div class="mdui-color-grey-700 mdui-p-t-4">
 		<div class="mdui-container footer">
