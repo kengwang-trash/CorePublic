@@ -205,7 +205,7 @@
 			width: 10px;
 			height: 10px;
 			-webkit-animation-delay: 2s;
-			animation-delay: 2s;
+			animation-delay: 2s; 
 			-webkit-animation-duration: 40s;
 			animation-duration: 40s;
 			background-color: rgba(255, 255, 255, 0.3);

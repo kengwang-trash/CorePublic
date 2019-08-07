@@ -20,14 +20,14 @@ class ErrorHandler
 }
 class DB
 {
-    //private $url;
+    private $url;
     private $datas;
     public function __construct($database, $dbtype, $dblink = './data/database/')
     {
         if ($dbtype == 'json') {
-            $json = file_get_contents($dblink.'/' . $database);
-            $url = NULL;
-            $datas = json_decode($json, true);
+            self::$url=$dblink . '/' . $database;
+            $json = file_get_contents(self::$url);
+            self::$datas = json_decode($json, true);
         } else {
             echo 'Unsupport Database Type ' . $dbtype;
         }
@@ -36,9 +36,27 @@ class DB
     {
         $result = self::$datas[$field];
         if (!$where == array() && count($where) > 0) {
-            //之后再写吧
+            $realres = array();
+            foreach ($where as $search) {
+                //遍历搜寻法
+                foreach ($result as $r) {
+                    if ($r[$search['key']] == $search['value']) {
+                        if (!in_array($r, $realres)) $realres[] = $r;
+                    }
+                }
+            }
+            $result = $realres;
         }
         if ($limit != -1) $result = array_slice($result, $limit - 1);
         return $result;
+    }
+
+    public function insertData($data)
+    {
+        self::$datas[]=$data;
+    }
+    private function SaveDataByDatas(){
+        $json=json_encode(self::$datas);
+        file_put_contents($);
     }
 }
