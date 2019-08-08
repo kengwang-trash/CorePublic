@@ -1,3 +1,4 @@
+</div>
 <div class="mdui-color-grey-700 mdui-p-t-4">
     <div class="mdui-container footer">
 

@@ -1,6 +1,7 @@
-<?php 
-include_once './function.php';
-$cp=new CP();
+<?php
+define('ROOT', dirname(__FILE__));
+include_once ROOT . '/function.php';
+$cp = new CP();
 ?>
 <!DOCTYPE html>
 <html>
@@ -16,26 +17,28 @@ $cp=new CP();
 	 -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-	<link rel="stylesheet" href="css/mdui.min.css" />
-    <title>核心公开站 - CorePublic - 自由,开放,极速的核心公开站</title>
-    
+	<link rel="stylesheet" href="/css/mdui.min.css" />
+	<title><?php echo $title; ?> - 核心公开站 - CorePublic - 自由,开放,极速的核心公开站</title>
 
-	<script src="js/mdui.min.js"></script>
-	<script src="js/jquery.min.js"></script>
+
+	<script src="/js/mdui.min.js"></script>
+	<script src="/js/jquery.min.js"></script>
 	<script>
-		var $jb_back = $('#jb').outerHeight();
+		$(document).ready(
+			function() {
+				var $nav_height = $("#nav").outerHeight();
+				var $bigtitle = $('#bigtitle').outerHeight();
+				$('.wrapper').height($bigtitle);
+				$("#header").height($bigtitle);
+				$('#BodyContents').css('margin-top', $nav_height);
+				_scroll()
+			}
+		);
 
-		$('.jb').height($)
-
-		var $nav_height = $("#nav").outerHeight();
-
-		var $bigtitle = $('#bigtitle').outerHeight();
-
-		$('.wrapper').height($bigtitle);
-
-		$("#header").height($bigtitle);
 
 		function _scroll() {
+			var $nav_height = $("#nav").outerHeight();
+			var $bigtitle = $('#bigtitle').outerHeight();
 			var scrollTop = $(window).scrollTop();
 			if (scrollTop < $bigtitle - $nav_height) {
 				if ($('.nav').hasClass('shadow')) {
@@ -60,9 +63,7 @@ $cp=new CP();
 		$(window).on('scroll', function() {
 			_scroll()
 		});
-		$(document).ready(function() {
-			_scroll()
-		});
+
 
 		function closePage() {
 			$('#accp').removeProp('checked');
@@ -72,6 +73,8 @@ $cp=new CP();
 			} else {
 				window.opener = null;
 				window.open("", "_self");
+				window.close();
+				window.location.href = "about:blank";
 				window.close();
 			}
 			alert('请手动关闭本标签页');
@@ -322,7 +325,32 @@ $cp=new CP();
 </head>
 
 <body>
-
+	<?php
+	if (User::checkLogin()) { }
+	?>
+	<div class="mdui-dialog" id="LoginDialog">
+		<div class="mdui-dialog-content">
+			<div class="mdui-container">
+				<h1 class="mdui-center">登录到 CorePublic</h1>
+				<form id="login">
+					<div class="mdui-textfield mdui-textfield-floating-label">
+						<div class="mdui-textfield-label">用户名</div>
+						<input type="text" name="username" id="username" class="mdui-textfield-input">
+					</div>
+					<div class="mdui-textfield mdui-textfield-floating-label">
+						<div class="mdui-textfield-label">密码</div>
+						<input type="password" name="password" id="password" class="mdui-textfield-input">
+					</div>
+					<div class="mdui-textfield mdui-textfield-floating-label">
+						<div class="mdui-textfield-label">验证码</div>
+						<input type="text" name="captcha" id="captcha" class="mdui-textfield-input">
+						<img id="yzm" name="yzm" src="/captcha.php" onclick="this.src='/captcha.php?id='+Math.random()" class="mdui-float-right" style="margin-top: -36px; widht:96px; height:36px;" mdui-tooltip="{content: '点击图片刷新验证码'}" />
+					</div>
+				</form>
+				<button style="width:100%" class="mdui-center mdui-btn mdui-btn-raised">登录</button>
+			</div>
+		</div>
+	</div>
 	<div class="mdui-dialog" id="ProtocolDialog">
 		<div class="mdui-dialog-title">协议</div>
 		<div class="mdui-dialog-content">
@@ -353,9 +381,9 @@ $cp=new CP();
 		<div class="mdui-toolbar">
 			<i class="mdui-icon material-icons"> </i>
 			<div id="main-title" class="mdui-typo-headline">核心公开站</div>
-			<div id="sub-title" class="mdui-typo-title">CorePublic</div>
+			<div id="sub-title" class="mdui-typo-title"><?php echo $title; ?></div>
 			<div class="mdui-toolbar-spacer"></div>
-			<button class="mdui-btn mdui-btn-raised mdui-btn-dense mdui-color-theme-accent mdui-ripple">登录</button>
+			<button mdui-dialog="{target:'#LoginDialog'}" class="mdui-btn mdui-btn-raised mdui-btn-dense mdui-color-theme-accent mdui-ripple">登录</button>
 			<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#menu'}"><i class="mdui-icon material-icons">more_vert</i></a>
 			<ul class="mdui-menu" id="menu">
 				<li class="mdui-menu-item">
@@ -368,36 +396,6 @@ $cp=new CP();
 		</div>
 	</div>
 
-
 	<div id="header">&nbsp;</div>
-
-	<div id="header" class="wrapper mdui-shadow-1">
-		<ul class="bg-bubbles">
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-		</ul>
-	</div>
-
-	<div style="text-align:center; color:#fff; background:none; position:absolute; z-index:20; top:0px; width:100%">
-		<div id="bigtitle" class="mdui-container" style="padding-top:64px; padding-bottom:64px;">
-			<div class="mdui-typo-display-1 mdui-m-t-3" style="letter-spacing:10px;">核心公开站</div>
-			<div class="mdui-typo-headline mdui-m-t-2" style="letter-spacing:2px;"><span class="mdui-text-color-pink">C</span>ore&nbsp;<span class="mdui-text-color-pink">P</span>ublic</div>
-            <br />
-            <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent header-btn mdui-color-indigo-700 mdui-m-t-3" mdui-tooltip="{content: '上传前请先同意协议'}">上传</button>
-			<br />
-			<br />
-			<label class="mdui-checkbox">
-				<input type="checkbox" id="accp" />
-				<i class="mdui-checkbox-icon"></i>
-				<a mdui-dialog="{target: '#ProtocolDialog'}">勾选表示您已阅读并且愿意遵守使用协议</a>
-			</label>
-		</div>
-	</div>
+	<!-- Header End -->
+	<div class="mdui-container" id="BodyContents">

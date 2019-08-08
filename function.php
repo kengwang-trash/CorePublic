@@ -1,5 +1,6 @@
 <?php
-include_once('./config.php');
+define('ROOT', dirname(__FILE__));
+include_once(ROOT . '/config.php');
 define('DEV', true);
 
 class User
@@ -7,7 +8,7 @@ class User
     private static $userID;
     public function __construct()
     {
-        if (!checkLogin() && !DEV){
+        if (!checkLogin() && !DEV) {
             return false;
         }
     }
@@ -27,10 +28,10 @@ class User
         }
         return false;
     }
-    public function getUserInfo($userID=null)
+    public static function getUserInfo($userID = null)
     {
-        if ($userID==null){
-            $userID=self::$userID;
+        if ($userID == null) {
+            $userID = self::$userID;
         }
         $db = new DB('User');
         return $db->getData()[$userID];
@@ -42,7 +43,7 @@ class CP
     public function __construct()
     {
         global $conf;
-        self::$config=$conf;
+        self::$config = $conf;
     }
     public function GetRecentUpload($num = 15)
     {
@@ -56,6 +57,52 @@ class ErrorHandler
     public function Error($msg, $level)
     { }
 }
+
+class FP
+{ //前端解析类
+    public static function CoreToListItem($Core)
+    {
+        $r = '';
+        switch ($Core['type']) {
+            case 'PHP5':
+                $typeout = 'PE核心 PHP5';
+                $icon = 'phone_android';
+                break;
+            case 'PHP7':
+                $typeout = 'PE核心 PHP7';
+                $icon = 'phone_android';
+                break;
+            case 'PHP72':
+                $typeout = 'PE核心 PHP7.2';
+                $icon = 'phone_android';
+                break;
+            case 'JAVA-PC':
+                $typeout = 'PC核心';
+                $icon = 'desktop_windows';
+                break;
+            case 'JAVA-NK':
+                $typeout = 'PE核心 JAVA';
+                $icon = 'phone_android';
+                break;
+            default:
+                $typeout = '未知核心';
+                $icon = 'bubble_chart';
+                break;
+        }
+        $r = $r . '<li class="mdui-list-item mdui-ripple">';
+        $r = $r . '<i class="mdui-list-item-icon mdui-icon material-icons">' . $icon . '</i>';
+        $r = $r . '<div class="mdui-list-item-content">';
+        $r = $r . '<div class="mdui-list-item-title mdui-list-item-one-line">';
+        $r = $r . '[' . $typeout . '] - ' . $Core['name'] . '<div class="mdui-typo-subheading-opacity">' . $Core['version'] . '</div>';
+        $r = $r . '</div>';
+        $r = $r . '<div class="mdui-list-item-text mdui-list-item-one-line">' . $Core['shortdes'] . '</div>';
+        $r = $r . '</div>';
+        $r = $r . '上传者:' . User::getUserInfo($Core['uploader'])['name'] . '  版本' . $Core['version'];
+        $r = $r . '</li>';
+        return $r;
+    }
+}
+
 class DB
 {
     private static $url;
@@ -64,17 +111,24 @@ class DB
     {
         if ($dbtype == 'json') {
             self::$url = $dblink . '/' . $database . '.json';
-            $json = file_get_contents(self::$url);
-            $json=self::StrEncrypt($json,'DECODE');
-            self::$datas = json_decode($json, true);
+            @$json = file_get_contents(self::$url);
+            $json = self::StrEncrypt($json, 'DECODE');
+            if ($json = '') {
+                echo 'Failed to open database ' . $database;
+                self::$datas = array();
+            } else {
+                self::$datas = json_decode($json, true);
+            }
         } else {
             echo 'Unsupport Database Type ' . $dbtype;
         }
     }
-    public function getData($where = array(), $limit = -1, $sortby = 'none')
+    public function getData($where = array(), $limit = -1, $sortby = 'none', $offset = 0)
     {
         $result = self::$datas;
-
+        if ($result == array()) {
+            return $result;
+        }
         if (!$where == array() && count($where) > 0) {
             $realres = array();
             foreach ($where as $search) {
@@ -89,20 +143,24 @@ class DB
         }
 
         if ($sortby != 'none') $result = self::SortArray($result, $sortby);
-        if ($limit != -1) $result = array_slice($result,0, $limit - 1);
+        if ($limit != -1) $result = array_slice($result, $offset, $limit - 1);
         return $result;
     }
 
-    public function insertData($data)
+    public function insertData($data, $autoaddkey = '')
     {
-        self::$datas[] = $data;
+        $nowid = count(self::$datas) + 1;
+        if ($autoaddkey != '') {
+            $data[$autoaddkey] = $nowid;
+        }
+        self::$datas[$nowid] = $data;
         self::SaveDataByDatas();
     }
 
     private function SaveDataByDatas()
     {
         $json = json_encode(self::$datas);
-        $json=self::StrEncrypt($json,'ENCODE');
+        $json = self::StrEncrypt($json, 'ENCODE');
         file_put_contents(self::$url, $json);
     }
     private static function SortArray($data, $sort_order_field, $sort_order = SORT_ASC, $sort_type = SORT_NUMERIC)
@@ -132,7 +190,7 @@ class DB
      */
     private static function StrEncrypt($string, $operation = 'DECODE', $key = 'HGay1*ji/aDn#l?57Gai', $expiry = 0)
     {
-        if ($string==''){
+        if ($string == '') {
             return '';
         }
         $ckey_length = 4;
