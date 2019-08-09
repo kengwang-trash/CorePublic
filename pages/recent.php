@@ -1,4 +1,5 @@
 <?php
+$title='最近上传';
 include '../header.php';
 ?>
 <!--十个最新 -->
@@ -8,16 +9,11 @@ include '../header.php';
         <ul class="mdui-list">
             <?php
             $c = $cp->GetRecentUpload();
-            if ($c == array()) {
-                $c[] = array(
-                    'id' => 0,
-                    'name' => '当前还没有核心哦',
-                    'shortdes' => '快来上传第一个吧!'
-                );
-            }
+            if ($c==array()) $c=array(array());
             foreach ($c as $item) {
                 echo FP::CoreToListItem($item);
-            } ?>
+            } 
+            ?>
         </ul>
     </div>
 </div>

@@ -1,23 +1,21 @@
 <?php
+session_start();
 define('ROOT', dirname(__FILE__));
 include_once(ROOT . '/config.php');
-define('DEV', true);
+define('DEV', false);
 
 class User
 {
     private static $userID;
     public function __construct()
     {
-        if (!checkLogin() && !DEV) {
-            return false;
-        }
+        self::$userID = $_SESSION['userID'];
     }
     public static function checkLogin()
     {
-        if (DEV) return DEV;
-        if (isset($_COOKIE['userID']) || $_COOKIE['userID'] != 0) {
-            self::$userID = $_COOKIE['userID'];
-            if (getUserInfo()['checkKey'] == $_COOKIE['ckk']) {
+        if (isset($_SESSION['userID']) && $_SESSION['userID'] != 0) {
+            self::$userID = $_SESSION['userID'];
+            if (self::getUserInfo()['checkKey'] == $_SESSION['ckk']) {
                 return true;
             } else {
                 return false;
@@ -34,7 +32,7 @@ class User
             $userID = self::$userID;
         }
         $db = new DB('User');
-        return $db->getData()[$userID];
+        return $db->getData(array())[$userID];
     }
 }
 class CP
@@ -47,7 +45,7 @@ class CP
     }
     public function GetRecentUpload($num = 15)
     {
-        $db = new DB('Core', 'json', self::$config['database']['link']);
+        $db = new DB('Core', 'json');
         $datas = $db->getData(array(), $num);
         return $datas;
     }
@@ -62,6 +60,19 @@ class FP
 { //前端解析类
     public static function CoreToListItem($Core)
     {
+        $notavalable = false;
+        if ($Core == array()) {
+            $notavalable = true;
+            $Core = array(
+                'id' => 0,
+                'name' => '当前还没有核心哦',
+                'shortdes' => '快来上传第一个吧!',
+                'uploader' => -50,
+                'version' => '暂无',
+                'uploadtime' => 'Today',
+                'updatetime' => 'Today'
+            );
+        }
         $r = '';
         switch ($Core['type']) {
             case 'PHP5':
@@ -96,8 +107,12 @@ class FP
         $r = $r . '[' . $typeout . '] - ' . $Core['name'] . '<div class="mdui-typo-subheading-opacity">' . $Core['version'] . '</div>';
         $r = $r . '</div>';
         $r = $r . '<div class="mdui-list-item-text mdui-list-item-one-line">' . $Core['shortdes'] . '</div>';
+        $r = $r . '<div class="mdui-list-item-text mdui-list-item-one-line"><i class="mdui-icon material-icons">account_circle</i>上传者:' . User::getUserInfo($Core['uploader'])['nickname'] . '&nbsp;&nbsp;&nbsp;&nbsp;<i class="mdui-icon material-icons">assessment</i>版本:&nbsp;' . $Core['version'] . '</div>';
         $r = $r . '</div>';
-        $r = $r . '上传者:' . User::getUserInfo($Core['uploader'])['name'] . '  版本' . $Core['version'];
+        if ($notavalable == false) {
+            $r = $r . '<a href="/core.php?id=' . $Core['id'] . '" ><button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">cloud_download</i>&nbsp;查看</button></a>';
+            $r = $r . '<a href="/down.php?id=' . $Core['id'] . '" ><button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">cloud_download</i>&nbsp;下载</button></a>';
+        }
         $r = $r . '</li>';
         return $r;
     }
@@ -107,14 +122,13 @@ class DB
 {
     private static $url;
     private static $datas;
-    public function __construct($database, $dbtype = 'json', $dblink = './data/database/')
+    public function __construct($database, $dbtype = 'json', $dblink = ROOT.'/data/database/')
     {
         if ($dbtype == 'json') {
             self::$url = $dblink . '/' . $database . '.json';
-            @$json = file_get_contents(self::$url);
+            $json = file_get_contents(self::$url);
             $json = self::StrEncrypt($json, 'DECODE');
-            if ($json = '') {
-                echo 'Failed to open database ' . $database;
+            if ($json == '') {
                 self::$datas = array();
             } else {
                 self::$datas = json_decode($json, true);
@@ -123,6 +137,27 @@ class DB
             echo 'Unsupport Database Type ' . $dbtype;
         }
     }
+
+    public function updateData($key, $value, $where = array())
+    {
+        $result = self::$datas;
+        if (!$where == array() && count($where) > 0) {
+            $realres = array();
+            foreach ($where as $search) {
+                //遍历搜寻法
+                foreach ($result as $k => $r) {
+                    if ($r[$search['key']] == $search['value']) {
+                        $r[$key] = $value;
+                        $result[$k] = $r;
+                    }
+                }
+            }
+        }
+        self::$datas = $result;
+        self::SaveDataByDatas();
+    }
+
+
     public function getData($where = array(), $limit = -1, $sortby = 'none', $offset = 0)
     {
         $result = self::$datas;

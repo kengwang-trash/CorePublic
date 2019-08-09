@@ -2,6 +2,8 @@
 define('ROOT', dirname(__FILE__));
 include_once ROOT . '/function.php';
 $cp = new CP();
+$user = new User();
+$userinfo = $user->getUserInfo();
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,334 +25,80 @@ $cp = new CP();
 
 	<script src="/js/mdui.min.js"></script>
 	<script src="/js/jquery.min.js"></script>
-	<script>
-		$(document).ready(
-			function() {
-				var $nav_height = $("#nav").outerHeight();
-				var $bigtitle = $('#bigtitle').outerHeight();
-				$('.wrapper').height($bigtitle);
-				$("#header").height($bigtitle);
-				$('#BodyContents').css('margin-top', $nav_height);
-				_scroll()
-			}
-		);
-
-
-		function _scroll() {
-			var $nav_height = $("#nav").outerHeight();
-			var $bigtitle = $('#bigtitle').outerHeight();
-			var scrollTop = $(window).scrollTop();
-			if (scrollTop < $bigtitle - $nav_height) {
-				if ($('.nav').hasClass('shadow')) {
-					$('.nav').addClass("ac");
-				}
-
-				$('.nav').removeClass("bb");
-				$('.nav').removeClass("c");
-				$('.nav').removeClass("shadow");
-				$('#main-title').addClass("mdui-hidden");
-				$('#sub-title').addClass("mdui-hidden");
-
-			} else {
-
-				$('.nav').removeClass("ac");
-				$('.nav').addClass("shadow");
-				$('.nav').addClass("c");
-				$('#main-title').removeClass("mdui-hidden");
-				$('#sub-title').removeClass("mdui-hidden");
-			}
-		}
-		$(window).on('scroll', function() {
-			_scroll()
-		});
-
-
-		function closePage() {
-			$('#accp').removeProp('checked');
-			var userAgent = navigator.userAgent;
-			if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Chrome") != -1) {
-				window.open("", "_self").close();
-			} else {
-				window.opener = null;
-				window.open("", "_self");
-				window.close();
-				window.location.href = "about:blank";
-				window.close();
-			}
-			alert('请手动关闭本标签页');
-
-		}
-	</script>
-	<style type="text/css">
-		.nav {
-			position: fixed;
-			color: #fff;
-		}
-
-		.c {
-			animation: myfirst 0s;
-			-webkit-animation: myfirst 0s;
-			animation-fill-mode: forwards;
-		}
-
-		@keyframes myfirst {
-			from {}
-
-			to {
-				background: rgba(63, 81, 181, 1);
-			}
-		}
-
-		@-webkit-keyframes myfirst
-
-		/* Safari and Chrome */
-			{
-			from {}
-
-			to {
-				background: rgba(63, 81, 181, 1);
-			}
-		}
-
-
-
-		.ac {
-			animation: acac 0s;
-			-webkit-animation: acac 0 s;
-			animation-fill-mode: forwards;
-		}
-
-		@keyframes acac {
-			from {
-				background: rgba(63, 81, 181, 1);
-			}
-
-			to {}
-		}
-
-		@-webkit-keyframes acac
-
-		/* Safari and Chrome */
-			{
-			from {
-				background: rgba(63, 81, 181, 1);
-			}
-
-			to {}
-		}
-
-
-		.aa {
-			background: rgba(63, 81, 181, 0);
-		}
-
-		.bb {
-			background: rgba(63, 81, 181, 1);
-		}
-
-
-		.j {
-			padding: 10px;
-		}
-
-		.shadow {
-			box-shadow: 1px 1px 5px #1A237E;
-		}
-
-		.content {
-			position: fixed;
-			top: 0;
-			right: 0;
-			left: 0;
-			bottom: 2.5rem;
-		}
-
-		.overflow-hidden::-webkit-scrollbar {
-			width: 0px;
-			height: 0px;
-		}
-
-
-		.footer a {
-			text-decoration: none;
-			color: #fff;
-			opacity: 0.9;
-		}
-
-
-		.wrapper {
-			background-image: linear-gradient(75deg, #3f51b5 20%, #3949ab 80%);
-			position: absolute;
-			top: 0;
-			width: 100%;
-			overflow: hidden;
-		}
-
-		.bg-bubbles {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			z-index: 5;
-		}
-
-		.bg-bubbles li {
-			position: absolute;
-			list-style: none;
-			display: block;
-			width: 40px;
-			height: 40px;
-			background-color: rgba(255, 255, 255, 0.15);
-			bottom: -150px;
-			-webkit-animation: square 25s infinite;
-			animation: square 25s infinite;
-			-webkit-transition-timing-function: linear;
-			transition-timing-function: linear;
-		}
-
-		.bg-bubbles li:nth-child(1) {
-			left: 10%;
-		}
-
-		.bg-bubbles li:nth-child(2) {
-			left: 20%;
-			width: 80px;
-			height: 80px;
-			-webkit-animation-delay: 2s;
-			animation-delay: 2s;
-			-webkit-animation-duration: 17s;
-			animation-duration: 17s;
-		}
-
-		.bg-bubbles li:nth-child(3) {
-			left: 25%;
-			-webkit-animation-delay: 4s;
-			animation-delay: 4s;
-		}
-
-		.bg-bubbles li:nth-child(4) {
-			left: 40%;
-			width: 60px;
-			height: 60px;
-			-webkit-animation-duration: 22s;
-			animation-duration: 22s;
-			background-color: rgba(255, 255, 255, 0.25);
-		}
-
-		.bg-bubbles li:nth-child(5) {
-			left: 70%;
-		}
-
-		.bg-bubbles li:nth-child(6) {
-			left: 80%;
-			width: 120px;
-			height: 120px;
-			-webkit-animation-delay: 3s;
-			animation-delay: 3s;
-			background-color: rgba(255, 255, 255, 0.2);
-		}
-
-		.bg-bubbles li:nth-child(7) {
-			left: 32%;
-			width: 160px;
-			height: 160px;
-			-webkit-animation-delay: 7s;
-			animation-delay: 7s;
-		}
-
-		.bg-bubbles li:nth-child(8) {
-			left: 55%;
-			width: 20px;
-			height: 20px;
-			-webkit-animation-delay: 15s;
-			animation-delay: 15s;
-			-webkit-animation-duration: 40s;
-			animation-duration: 40s;
-		}
-
-		.bg-bubbles li:nth-child(9) {
-			left: 25%;
-			width: 10px;
-			height: 10px;
-			-webkit-animation-delay: 2s;
-			animation-delay: 2s;
-			-webkit-animation-duration: 40s;
-			animation-duration: 40s;
-			background-color: rgba(255, 255, 255, 0.3);
-		}
-
-		.bg-bubbles li:nth-child(10) {
-			left: 90%;
-			width: 160px;
-			height: 160px;
-			-webkit-animation-delay: 11s;
-			animation-delay: 11s;
-		}
-
-		@-webkit-keyframes square {
-			0% {
-				-webkit-transform: translateY(0);
-				transform: translateY(0);
-			}
-
-			100% {
-				-webkit-transform: translateY(-700px) rotate(600deg);
-				transform: translateY(-700px) rotate(600deg);
-			}
-		}
-
-		@keyframes square {
-			0% {
-				-webkit-transform: translateY(0);
-				transform: translateY(0);
-			}
-
-			100% {
-				-webkit-transform: translateY(-700px) rotate(600deg);
-				transform: translateY(-700px) rotate(600deg);
-			}
-		}
-
-		.header-btn {
-			border: 2px solid #7986cb;
-			border-radius: 100px;
-			opacity: 0.45;
-			min-width: 120px;
-		}
-
-		.header-btn:hover {
-			opacity: 1;
-			border: 2px solid #9fa8da;
-		}
-	</style>
+	<script src="/js/corepublic.js"></script>
+	<link rel="stylesheet" href="/css/corepublic.css" />
 </head>
 
 <body>
 	<?php
-	if (User::checkLogin()) { }
-	?>
-	<div class="mdui-dialog" id="LoginDialog">
-		<div class="mdui-dialog-content">
-			<div class="mdui-container">
-				<h1 class="mdui-center">登录到 CorePublic</h1>
-				<form id="login">
-					<div class="mdui-textfield mdui-textfield-floating-label">
-						<div class="mdui-textfield-label">用户名</div>
-						<input type="text" name="username" id="username" class="mdui-textfield-input">
-					</div>
-					<div class="mdui-textfield mdui-textfield-floating-label">
-						<div class="mdui-textfield-label">密码</div>
-						<input type="password" name="password" id="password" class="mdui-textfield-input">
-					</div>
-					<div class="mdui-textfield mdui-textfield-floating-label">
-						<div class="mdui-textfield-label">验证码</div>
-						<input type="text" name="captcha" id="captcha" class="mdui-textfield-input">
-						<img id="yzm" name="yzm" src="/captcha.php" onclick="this.src='/captcha.php?id='+Math.random()" class="mdui-float-right" style="margin-top: -36px; widht:96px; height:36px;" mdui-tooltip="{content: '点击图片刷新验证码'}" />
-					</div>
-				</form>
-				<button style="width:100%" class="mdui-center mdui-btn mdui-btn-raised">登录</button>
+	if (!$user::checkLogin()) {
+		?>
+		<div class="mdui-dialog" id="LoginDialog">
+			<div id="LoginProgress" class="mdui-hidden mdui-progress">
+				<div class="mdui-progress-indeterminate"></div>
+			</div>
+			<div class="mdui-tab mdui-tab-full-width" mdui-tab>
+				<a href="#LoginTab" class="mdui-ripple">登录</a>
+				<a href="#RegTab" class="mdui-ripple">注册</a>
+			</div>
+			<div class="mdui-dialog-content">
+				<div class="mdui-container" id="LoginTab">
+					<h1 class="mdui-center">登录到 CorePublic</h1>
+					<form id="login">
+						<div class="mdui-textfield mdui-textfield-floating-label">
+							<div class="mdui-textfield-label">用户名</div>
+							<input type="text" name="username" id="username" class="mdui-textfield-input">
+						</div>
+						<div class="mdui-textfield mdui-textfield-floating-label">
+							<div class="mdui-textfield-label">密码</div>
+							<input type="password" name="password" id="password" class="mdui-textfield-input">
+						</div>
+						<div class="mdui-textfield mdui-textfield-floating-label">
+							<div class="mdui-textfield-label">验证码</div>
+							<input type="text" name="captcha" id="captcha" class="mdui-textfield-input">
+							<img id="yzm" src="/captcha.php" onclick="$('#LoginProgress').removeClass('mdui-hidden');this.src='/captcha.php?id='+Math.random()" class="mdui-float-right" style="margin-top: -36px; widht:96px; height:36px;" mdui-tooltip="{content: '点击图片刷新验证码'}" />
+						</div>
+					</form>
+					<br />
+					<br />
+					<button onclick="$('#LoginProgress').removeClass('mdui-hidden');login()" class="mdui-color-indigo mdui-text-color-white-text mdui-btn-block mdui-center mdui-btn mdui-btn-raised">登录</button>
+				</div>
+
+				<!-- Reg -->
+				<div class="mdui-container" id="RegTab">
+					<h1 class="mdui-center">注册到 CorePublic</h1>
+					<form id="reg">
+						<div class="mdui-textfield mdui-textfield-floating-label">
+							<div class="mdui-textfield-label">用户名</div>
+							<input type="text" name="username" id="username" class="mdui-textfield-input">
+						</div>
+						<div class="mdui-textfield mdui-textfield-floating-label">
+							<div class="mdui-textfield-label">昵称</div>
+							<input type="text" name="nickname" id="nickname" class="mdui-textfield-input">
+						</div>
+						<div class="mdui-textfield mdui-textfield-floating-label">
+							<div class="mdui-textfield-label">密码</div>
+							<input type="password" name="password" id="password" class="mdui-textfield-input">
+						</div>
+						<div class="mdui-textfield mdui-textfield-floating-label">
+							<div class="mdui-textfield-label">邮箱</div>
+							<input type="email" name="email" id="email" class="mdui-textfield-input">
+						</div>
+						<div class="mdui-textfield mdui-textfield-floating-label">
+							<div class="mdui-textfield-label">验证码</div>
+							<input type="text" name="captcha" id="captcha" class="mdui-textfield-input">
+							<img id="yzm" src="/captcha.php?t=reg" onclick="$('#LoginProgress').removeClass('mdui-hidden');this.src='/captcha.php?t=reg&id='+Math.random()" class="mdui-float-right" style="margin-top: -36px; widht:96px; height:36px;" mdui-tooltip="{content: '点击图片刷新验证码'}" />
+						</div>
+					</form>
+					<br />
+					<br />
+					<button onclick="$('#LoginProgress').removeClass('mdui-hidden');reg();" class="mdui-color-indigo mdui-text-color-white-text mdui-btn-block mdui-center mdui-btn mdui-btn-raised">注册</button>
+				</div>
 			</div>
 		</div>
-	</div>
+	<?php
+	}
+	?>
 	<div class="mdui-dialog" id="ProtocolDialog">
 		<div class="mdui-dialog-title">协议</div>
 		<div class="mdui-dialog-content">
@@ -380,10 +128,24 @@ $cp = new CP();
 	<div id="nav" class="nav mdui-appbar mdui-appbar-fixed mdui-shadow-0">
 		<div class="mdui-toolbar">
 			<i class="mdui-icon material-icons"> </i>
-			<div id="main-title" class="mdui-typo-headline">核心公开站</div>
+			<a href="">
+				<div id="main-title" class="mdui-typo-headline">核心公开站</div>
+			</a>
 			<div id="sub-title" class="mdui-typo-title"><?php echo $title; ?></div>
 			<div class="mdui-toolbar-spacer"></div>
-			<button mdui-dialog="{target:'#LoginDialog'}" class="mdui-btn mdui-btn-raised mdui-btn-dense mdui-color-theme-accent mdui-ripple">登录</button>
+			<?php
+			if (!$user::checkLogin()) {
+				?>
+				<button mdui-dialog="{target:'#LoginDialog'}" class="mdui-btn mdui-btn-raised mdui-btn-dense mdui-color-theme-accent mdui-ripple">登录</button>
+			<?php } else {
+				if (!isset($userinfo['avatar'])) {
+					$email = $userinfo['email'];
+					$default = "mm";
+					$size = 40;
+					$grav_url = "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default) . "&s=" . $size;
+					?><a class="mdui-btn" style="text-transform: unset !important;"><img class="mdui-icon" src="<?php echo $grav_url; ?>">&nbsp;&nbsp;<span><?php echo $userinfo['username']; ?></span></a>
+				<?php }
+			} ?>
 			<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#menu'}"><i class="mdui-icon material-icons">more_vert</i></a>
 			<ul class="mdui-menu" id="menu">
 				<li class="mdui-menu-item">
@@ -398,4 +160,21 @@ $cp = new CP();
 
 	<div id="header">&nbsp;</div>
 	<!-- Header End -->
-	<div class="mdui-container" id="BodyContents">
+	<?php if ($title != '首页') {
+		echo '<div class="mdui-container" id="BodyContents">';
+	} else {
+		echo '	<div id="header" class="wrapper mdui-shadow-1">
+	<ul class="bg-bubbles">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+</div>';
+	}
