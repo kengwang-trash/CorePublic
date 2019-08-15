@@ -19,33 +19,85 @@ function login() {
         url: "/ajax.php?fun=login",
         data: data,
         success: function (json) {
-            var array=JSON.parse(json);
-            if (array.status){
+            var array = JSON.parse(json);
+            if (array.status) {
                 mdui.snackbar({
                     message: '登陆成功,三秒后跳转!',
                     position: 'right-top'
-                  });
-                  location.reload();
-            }else{
-                if (array.code==-10){
+                });
+                location.reload();
+            } else {
+                if (array.code == -10) {
                     mdui.snackbar({
                         message: '登录失败,请检查账号密码',
                         position: 'right-top'
-                      });
+                    });
                 }
-                if (array.code==-20){
+                if (array.code == -20) {
                     mdui.snackbar({
                         message: '登录失败,请检查验证码',
                         position: 'right-top'
-                      });
+                    });
                 }
             }
             $('#LoginProgress').addClass('mdui-hidden');
-            document.getElementById('yzm').src='/captcha.php?id='+Math.random();
+            document.getElementById('yzm').src = '/captcha.php?id=' + Math.random();
         }
     });
 }
 
+function AgreePro() {
+    accpro = true
+}
+
+function ChangeTab(t) {
+
+    if (t == "reg") {
+        new mdui.Dialog('#ProtocolDialog').open();
+        new mdui.Dialog('#RegDialog').open();
+
+    } else {
+        new mdui.Dialog('#LoginDialog').open();
+    }
+}
+
+function reg() {
+    var data = $("#reg").serialize();
+    $.ajax({
+        type: 'post',
+        url: "/ajax.php?fun=reg",
+        data: data,
+        success: function (json) {
+            var array = JSON.parse(json);
+            if (array.status) {
+                mdui.snackbar({
+                    message: '注册成功,三秒后跳转!',
+                    position: 'right-top'
+                });
+                location.reload();
+            } else {
+                if (array.code == -10) {
+                    mdui.snackbar({
+                        message: '注册失败,该用户名被注册',
+                        position: 'right-top'
+                    });
+                } else if (array.code == 281) {
+                    mdui.snackbar({
+                        message: 'SYSTEM ALERT CODE:281  您的行为异常',
+                        position: 'right-top'
+                    });
+                } else {
+                    mdui.snackbar({
+                        message: "注册失败,未知错误!",
+                        position: 'right-top'
+                    });
+                }
+            }
+            $('#LoginProgress').addClass('mdui-hidden');
+            document.getElementById('yzm-reg').src = '/captcha.php?t=reg&id=' + Math.random();
+        }
+    });
+}
 
 
 function _scroll() {

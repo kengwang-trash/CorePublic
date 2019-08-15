@@ -64,6 +64,13 @@ if ($_GET['fun'] == 'login') {
 }
 
 if ($_GET['fun'] == 'reg') {
+    if ($_POST['accp']!=true){
+        echo json_encode(array(
+            'status' => false,
+            'code' => 281
+        ));
+        exit;
+    }
     $db = new DB('User');
     $data = $db->getData(
         array(
@@ -73,8 +80,8 @@ if ($_GET['fun'] == 'reg') {
             )
         )
     );
-    if ($data == null || $data == array()) {
-        json_decode(array(
+    if ($data != null && $data != array()) {
+        echo json_encode(array(
             'status' => false,
             'code' => -10
         ));
@@ -82,10 +89,28 @@ if ($_GET['fun'] == 'reg') {
     }
     $data = array(
         'username' => $_POST['username'],
+        'nickname' => $_POST['nickname'],
         'password' => md5($_POST['password']),
         'email' => $_POST['email'],
         'type' => 'user',
         'resiger' => time()
     );
     $db->insertData($data, 'id');
+    echo json_encode(array(
+        'status' => true
+    ));
+}
+
+if ($_GET['fun'] == 'user') {
+    $db = new DB('User');
+    $data = $db->getData(
+        array(
+            0 => array(
+                'key' => 'username',
+                'value' => 'kengwang'
+            )
+        )
+    );
+
+    print_r($data);
 }

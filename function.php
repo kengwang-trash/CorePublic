@@ -122,7 +122,7 @@ class DB
 {
     private static $url;
     private static $datas;
-    public function __construct($database, $dbtype = 'json', $dblink = ROOT.'/data/database/')
+    public function __construct($database, $dbtype = 'json', $dblink = ROOT . '/data/database/')
     {
         if ($dbtype == 'json') {
             self::$url = $dblink . '/' . $database . '.json';
@@ -158,7 +158,7 @@ class DB
     }
 
 
-    public function getData($where = array(), $limit = -1, $sortby = 'none', $offset = 0)
+    public function getData($where=array(), $limit = -1, $sortby = 'none', $offset = 0)
     {
         $result = self::$datas;
         if ($result == array()) {
@@ -166,7 +166,7 @@ class DB
         }
         if (!$where == array() && count($where) > 0) {
             $realres = array();
-            foreach ($where as $search) {
+            foreach ($where as $search) {                
                 //遍历搜寻法
                 foreach ($result as $r) {
                     if ($r[$search['key']] == $search['value']) {
