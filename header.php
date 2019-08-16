@@ -122,7 +122,7 @@ $userinfo = $user->getUserInfo();
 						<img id="yzm-reg" src="/captcha.php?t=reg" onclick="$('#LoginProgress').removeClass('mdui-hidden');this.src='/captcha.php?t=reg&id='+Math.random()" class="mdui-float-right" style="margin-top:-36px; widht:96px; height:36px;" mdui-tooltip="{content: '点击图片刷新验证码'}" />
 					</div>
 					<label class="mdui-checkbox">
-						<input type="checkbox" id="accp" name="accp"/>
+						<input type="checkbox" id="accp" name="accp" />
 						<i class="mdui-checkbox-icon"></i>勾选表示您已阅读并且愿意遵守使用协议
 					</label>
 				</form>
@@ -136,7 +136,31 @@ $userinfo = $user->getUserInfo();
 	</div>
 	<?php
 	}
-	?><div class="mdui-dialog" id="ProtocolDialog">
+	?>
+	<?php
+	if ($_SESSION['WatchAnn']==false){
+		echo '<script>
+		$(document).ready(
+			function(){
+				ShowAnn();
+			}
+		);
+		</script>';
+		$_SESSION['WatchAnn']=true;
+	}
+	?>
+	<div class="mdui-dialog" id="AnnDialog">
+		<div class="mdui-dialog-title">公告</div>
+		<div class="mdui-dialog-content">
+			<div class="mdui-typo">			
+				这个就是公告啊,内容还在想,这个只是为了UI设计方便
+				我们换个行继续说
+				这个只是试行版,后期肯定会改的
+				咕咕咕......
+			</div>
+		</div>
+	</div>
+	<div class="mdui-dialog" id="ProtocolDialog">
 		<div class="mdui-dialog-title">协议</div>
 		<div class="mdui-dialog-content">
 			<div class="mdui-typo">
@@ -183,9 +207,18 @@ $userinfo = $user->getUserInfo();
 				<i class="mdui-icon material-icons">more_vert</i></a>
 			<ul class="mdui-menu" id="menu">
 				<li class="mdui-menu-item">
-					<a mdui-dialog="{target:'#ProtocolDialog'}" class="mdui-ripple">查看协议</a></li>
+					<a mdui-dialog="{target:'#ProtocolDialog'}" class="mdui-ripple">查看协议</a>
+				</li>
 				<li class="mdui-menu-item">
-					<a href="/about.php" class="mdui-ripple">关于我们</a></li>
+					<a href="/about.php" class="mdui-ripple">关于我们</a>
+				</li>
+				<?php
+				if ($user::checkLogin()) {
+					?>
+				<li class="mdui-menu-item">
+					<a href="/ajax.php?fun=logout" class="mdui-ripple">登出</a>
+				</li>
+				<?php } ?>
 			</ul>
 		</div>
 	</div>

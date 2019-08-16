@@ -54,6 +54,7 @@ if ($_GET['fun'] == 'login') {
         );
         exit;
     } else {
+        $_SESSION['captcha'] = 'error';
         echo json_encode(
             array(
                 'status' => false,
@@ -64,11 +65,21 @@ if ($_GET['fun'] == 'login') {
 }
 
 if ($_GET['fun'] == 'reg') {
-    if ($_POST['accp']!=true){
+    if ($_POST['accp'] != true) {
         echo json_encode(array(
             'status' => false,
-            'code' => 281
+            'code' => 871
         ));
+        exit;
+    }
+    if (md5(md5($_POST['captcha'])) != $_SESSION['captreg']) {
+        $_SESSION['captreg'] = 'error';
+        echo json_encode(
+            array(
+                'status' => false,
+                'code' => -20
+            )
+        );
         exit;
     }
     $db = new DB('User');
@@ -81,6 +92,7 @@ if ($_GET['fun'] == 'reg') {
         )
     );
     if ($data != null && $data != array()) {
+        $_SESSION['captreg'] = 'error';
         echo json_encode(array(
             'status' => false,
             'code' => -10
@@ -103,14 +115,11 @@ if ($_GET['fun'] == 'reg') {
 
 if ($_GET['fun'] == 'user') {
     $db = new DB('User');
-    $data = $db->getData(
-        array(
-            0 => array(
-                'key' => 'username',
-                'value' => 'kengwang'
-            )
-        )
-    );
+    $data = $db->getData();
 
     print_r($data);
+}
+
+if ($_GET['fun'] == 'ReshowAnn') {
+    $_SESSION['WatchAnn']=false;
 }
