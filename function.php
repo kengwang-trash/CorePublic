@@ -110,7 +110,7 @@ class FP
         $r = $r . '<div class="mdui-list-item-text mdui-list-item-one-line"><i class="mdui-icon material-icons">account_circle</i>上传者:' . User::getUserInfo($Core['uploader'])['nickname'] . '&nbsp;&nbsp;&nbsp;&nbsp;<i class="mdui-icon material-icons">assessment</i>版本:&nbsp;' . $Core['version'] . '</div>';
         $r = $r . '</div>';
         if ($notavalable == false) {
-            $r = $r . '<a href="/core.php?id=' . $Core['id'] . '" ><button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">cloud_download</i>&nbsp;查看</button></a>';
+            $r = $r . '<a href="/core.php?id=' . $Core['id'] . '" ><button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">description</i>&nbsp;查看</button></a>';
             $r = $r . '<a href="/down.php?id=' . $Core['id'] . '" ><button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">cloud_download</i>&nbsp;下载</button></a>';
         }
         $r = $r . '</li>';
@@ -194,7 +194,7 @@ class DB
 
     private function SaveDataByDatas()
     {
-        $json = json_encode(self::$datas);
+        $json = json_encode(self::$datas);        
         $json = self::StrEncrypt($json, 'ENCODE');
         file_write_safe(self::$url, $json);
     }

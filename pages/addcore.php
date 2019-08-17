@@ -2,35 +2,9 @@
 $title = '添加核心';
 $NeedMD = true;
 include_once '../header.php';
-if (!User::checkLogin()) {
-    //Need Logins    
-    echo 'Need Login';
-    exit;
-}
-if (isset($_POST['name'])) {
-    $name = $_POST['name'];
-    $des = $_POST['des'];
-    $type = $_POST['type'];
-    $uploader = $_COOKIE['userID'];
-    $link = $_POST['link'];
-    $des = $_POST['shortdes'];
-    $core = array(
-        'name' => $name,
-        'shortdes' => $shortdes,
-        'des' => $des,
-        'type' => $type,
-        'uploader' => $uploader,
-        'link' => $link,
-        'uploadtime' => time()
-    );
-    $db = new DB('Core');
-    $db->insertData($core, 'id');
-    echo 'done';
-    exit;
-}
 ?>
 <div class="mdui-typo-display-2 mdui-center mdui-container">添加核心</div>
-<form method="post" style="width:100%" action="/addcore.php">
+<form method="post" style="width:100%" action="/ajax.php?fun=addcore">
     <div class="mdui-textfield mdui-textfield-floating-label">
         <label class="mdui-textfield-label">插件名称</label>
         <input class="mdui-textfield-input" type="text" name="name" id="name">
@@ -40,7 +14,7 @@ if (isset($_POST['name'])) {
         <input class="mdui-textfield-input" type="text" name="shortdes" id="shortdes">
     </div>
     <div id="editor">
-        <textarea style="display:none;">### 您可以在此处通过**Markdown**编写您的核心简介
+        <textarea name="des" style="display:none;">### 您可以在此处通过**Markdown**编写您的核心简介
 ### You can use **Markdown** to edit the description of the Core!
 #### Powered by Editor.md</textarea>
     </div>
@@ -59,11 +33,12 @@ if (isset($_POST['name'])) {
         <label class="mdui-textfield-label">下载链接,后期替换为上传</label>
         <input class="mdui-textfield-input" type="text" name="link" id="link">
     </div>
+    <button class="mdui-btn mdui-btn-block mdui-btn-raised mdui-color-indigo mdui-ripple">上传</button>
     </form>
     
 <br>
 <br>
-<button class="mdui-btn mdui-btn-block mdui-btn-raised mdui-color-indigo mdui-ripple">上传</button>
+
 <br>
 <br>
 <?php

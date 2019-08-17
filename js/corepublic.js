@@ -29,7 +29,7 @@ function login() {
             } else {
                 if (array.code == -10) {
                     mdui.snackbar({
-                        message: '登录失败,请检查账号密码',
+                        message: array.msg,
                         position: 'right-top'
                     });
                 } else if (array.code == -20) {
@@ -37,7 +37,7 @@ function login() {
                         message: '登录失败,请检查验证码',
                         position: 'right-top'
                     });
-                } else if (array.code == -20) {
+                } else if (array.code == -871) {
                     mdui.snackbar({
                         message: 'SYSTEM ALERT: CODE871  您的账号被封禁',
                         position: 'right-top'
@@ -91,10 +91,10 @@ function reg() {
                     });
                 } else if (array.code == -20) {
                     mdui.snackbar({
-                        message: '登录失败,请检查验证码',
+                        message: '注册失败,请检查验证码',
                         position: 'right-top'
                     });
-                } else if (array.code == 871) {
+                } else if (array.code == -871) {
                     mdui.snackbar({
                         message: 'SYSTEM ALERT: CODE871  您的行为异常',
                         position: 'right-top'
@@ -156,4 +156,8 @@ function closePage() {
     }
     alert('请手动关闭本标签页');
 
+}
+
+function UploadCore(){
+    var data = $("#reg").serialize();
 }
