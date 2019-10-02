@@ -33,8 +33,7 @@ CorePublic致力于优化服主开服体验,使服务商便捷省心。中文名
 ## 太赞了!我要打赏!
 呼呼,你可真是个好人,好人一生平安!
 
-![微信收款码](https://s2.ax1x.com/2019/08/07/eIOdCn.png)
-
-![支付宝收款码](https://s2.ax1x.com/2019/08/07/eIOU4s.jpg)
-
+[![微信收款图](https://s2.ax1x.com/2019/08/18/mQqhGQ.jpg)]
+[![支付宝收款图](https://s2.ax1x.com/2019/08/18/mQqfPg.jpg)]
+比特币Bitcoin:1JGCwJBRSM7bJJdgyfMddiwLhoZzm8Z9K5
 打赏有机会进入打赏列表哦!
