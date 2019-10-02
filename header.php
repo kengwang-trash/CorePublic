@@ -43,7 +43,7 @@ $userinfo = $user->getUserInfo();
 				theme: "dark",
 				previewTheme: "dark",
 				editorTheme: "pastel-on-dark",
-				placeholder: "核心简介写在这里哦",
+				placeholder: "核心简介可以通过MarkDown写在这里哦",
 				codeFold: true,
 				syncScrolling: "single",
 				searchReplace: true,
@@ -182,11 +182,11 @@ $userinfo = $user->getUserInfo();
 		<div class="mdui-dialog-actions">
 			<button class="mdui-btn mdui-ripple" onclick="closePage();">我不同意</button><button class="mdui-btn mdui-ripple" onclick="AgreePro();" mdui-dialog-close>我已阅读并同意</button></div>
 	</div>
-	<div id="nav" class="nav mdui-appbar mdui-appbar-fixed mdui-shadow-0">
+	<div id="nav" mdui-headroom class="nav mdui-appbar mdui-appbar-fixed mdui-shadow-0">
 		<div class="mdui-toolbar">
 			<i class="mdui-icon material-icons">
 			</i><a href="/">
-				<div id="main-title" class="mdui-typo-headline">核心公开站</div>
+				<div id="main-title" class="mdui-hidden-xs-down mdui-typo-headline">核心公开站</div>
 			</a>
 			<div id="sub-title" class="mdui-typo-title"><?php echo $title; ?></div>
 			<div class="mdui-toolbar-spacer">
@@ -202,7 +202,7 @@ $userinfo = $user->getUserInfo();
 					$size = 40;
 					$grav_url = "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($default) . "&s=" . $size;
 					?><a class="mdui-btn" style="text-transform: unset !important;">
-				<img class="mdui-icon" src="<?php echo $grav_url; ?>">&nbsp;&nbsp;<span><?php echo $userinfo['username']; ?></span></a><?php }
+				<img class="mdui-icon" src="<?php echo $grav_url; ?>">&nbsp;&nbsp;<span class="mdui-hidden-xs-down"><?php echo $userinfo['username']; ?></span></a><?php }
 																																		} ?><a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#menu'}">
 				<i class="mdui-icon material-icons">more_vert</i></a>
 			<ul class="mdui-menu" id="menu">

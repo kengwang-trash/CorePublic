@@ -66,7 +66,7 @@ function ChangeTab(t) {
 }
 
 function ShowAnn(){
-    new mdui.Dialog('#AnnDialog').open();
+    new mdui.Dialog('#AnnDialog',{history:false}).open();
 }
 
 function reg() {

@@ -14,9 +14,7 @@ include_once '../header.php';
         <input class="mdui-textfield-input" type="text" name="shortdes" id="shortdes">
     </div>
     <div id="editor">
-        <textarea name="des" style="display:none;">### 您可以在此处通过**Markdown**编写您的核心简介
-### You can use **Markdown** to edit the description of the Core!
-#### Powered by Editor.md</textarea>
+        <textarea name="des" style="display:none;"></textarea>
     </div>
     <select class="mdui-select" mdui-select name="type" id="type">
         <optgroup label="Java系列">

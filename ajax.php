@@ -24,7 +24,12 @@ function ThrowDone($code = 9000, $msg = "")
 //操作类
 
 if (isset($_GET['fun'])) {
-    Ajax::$_GET['fun']();
+    $x = $_GET['fun'];
+    if (function_exists(Ajax::$x())) {
+        Ajax::$x();
+    }else{
+        ThrowError(-300,'Function '.$x.' Not Defined!');
+    }
 }
 class Ajax
 {
@@ -158,20 +163,20 @@ class Ajax
             $name = $_POST['name'];
             $des = $_POST['des'];
             $type = $_POST['type'];
-            $uploader = $_COOKIE['userID'];
+            $uploader = $_SESSION['userID'];
             $link = $_POST['link'];
             $shortdes = $_POST['shortdes'];
-            $core = array(
+            $cdata = array(
                 'name' => $name,
                 'shortdes' => $shortdes,
                 'des' => $des,
                 'type' => $type,
-                'uploader' => $uploader,
+                'uploader' => $uploader,                
                 'link' => $link,
                 'uploadtime' => time()
             );
-            $db = new DB('Core');
-            $db->insertData($core, 'id');
+            $core=new Core();
+            $core->AddCore($cdata);
             ThrowDone();
             exit;
         }

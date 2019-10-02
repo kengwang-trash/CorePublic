@@ -50,6 +50,16 @@ class CP
         return $datas;
     }
 }
+
+class Core
+{
+    public function AddCore($core)
+    {
+        $db = new DB('Core');
+        $db->insertData($core, 'id');
+    }
+}
+
 class ErrorHandler
 {
     public function Error($msg, $level)
@@ -100,20 +110,23 @@ class FP
                 $icon = 'bubble_chart';
                 break;
         }
-        $r = $r . '<li class="mdui-list-item mdui-ripple">';
-        $r = $r . '<i class="mdui-list-item-icon mdui-icon material-icons">' . $icon . '</i>';
-        $r = $r . '<div class="mdui-list-item-content">';
-        $r = $r . '<div class="mdui-list-item-title mdui-list-item-one-line">';
-        $r = $r . '[' . $typeout . '] - ' . $Core['name'] . '<div class="mdui-typo-subheading-opacity">' . $Core['version'] . '</div>';
-        $r = $r . '</div>';
-        $r = $r . '<div class="mdui-list-item-text mdui-list-item-one-line">' . $Core['shortdes'] . '</div>';
-        $r = $r . '<div class="mdui-list-item-text mdui-list-item-one-line"><i class="mdui-icon material-icons">account_circle</i>上传者:' . User::getUserInfo($Core['uploader'])['nickname'] . '&nbsp;&nbsp;&nbsp;&nbsp;<i class="mdui-icon material-icons">assessment</i>版本:&nbsp;' . $Core['version'] . '</div>';
-        $r = $r . '</div>';
-        if ($notavalable == false) {
-            $r = $r . '<a href="/core.php?id=' . $Core['id'] . '" ><button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">description</i>&nbsp;查看</button></a>';
-            $r = $r . '<a href="/down.php?id=' . $Core['id'] . '" ><button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">cloud_download</i>&nbsp;下载</button></a>';
-        }
-        $r = $r . '</li>';
+        $r = '
+    <!--<a href="/core.php?id=' . $Core['id'] . '"> -->
+        <li class="mdui-list-item mdui-ripple">
+            <i class="mdui-list-item-icon mdui-icon material-icons" mdui-tooltip="{content: \'' . $typeout . '\'}">' . $icon . '</i>
+            <div class="mdui-list-item-content">
+                <div class="mdui-list-item-title mdui-list-item-one-line">
+                    ' . $Core['name'] . '
+                    <div class="mdui-typo-subheading-opacity">' . $Core['version'] . '
+                    </div>
+                </div>
+                <div class="mdui-list-item-text mdui-list-item-one-line">' . $Core['shortdes'] . '</div>
+                <div class="mdui-list-item-text mdui-list-item-one-line"><i class="mdui-icon material-icons">account_circle</i>上传者:' . User::getUserInfo($Core['uploader'])['nickname'] . '&nbsp;&nbsp;&nbsp;&nbsp;<i class="mdui-icon material-icons">assessment</i>版本:&nbsp;' . $Core['version'] . '</div>
+            </div>
+            <a class="mdui-hidden-lg-down" href="/down.php?id=' . $Core['id'] . '"><button class="mdui-hidden-sm-down mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">cloud_download</i>&nbsp;下载</button></a>
+            <a class="mdui-hidden-xl" href="/down.php?id=' . $Core['id'] . '"><button class="mdui-hidden-sm-up mdui-btn mdui-btn-icon mdui-btn-raised mdui-ripple mdui-color-theme-accent"><i class="mdui-icon material-icons">cloud_download</i></button></a>
+        </li>
+    <!-- </a> -->';
         return $r;
     }
 }
@@ -158,7 +171,7 @@ class DB
     }
 
 
-    public function getData($where=array(), $limit = -1, $sortby = 'none', $offset = 0)
+    public function getData($where = array(), $limit = -1, $sortby = 'none', $offset = 0)
     {
         $result = self::$datas;
         if ($result == array()) {
@@ -166,7 +179,7 @@ class DB
         }
         if (!$where == array() && count($where) > 0) {
             $realres = array();
-            foreach ($where as $search) {                
+            foreach ($where as $search) {
                 //遍历搜寻法
                 foreach ($result as $r) {
                     if ($r[$search['key']] == $search['value']) {
@@ -190,11 +203,12 @@ class DB
         }
         self::$datas[$nowid] = $data;
         self::SaveDataByDatas();
+        return $nowid;
     }
 
     private function SaveDataByDatas()
     {
-        $json = json_encode(self::$datas);        
+        $json = json_encode(self::$datas);
         $json = self::StrEncrypt($json, 'ENCODE');
         file_write_safe(self::$url, $json);
     }
@@ -281,15 +295,15 @@ class DB
     }
 }
 
- 
+
 /**
  * @link http://kodcloud.com/
  * @author warlee | e-mail:kodcloud@qq.com
  * @copyright warlee 2014.(Shanghai)Co.,Ltd
  * @license http://kodcloud.com/tools/license/license.txt
  */
- 
- 
+
+
 /**
  * 安全读取文件，避免并发下读取数据为空
  * 
@@ -297,21 +311,21 @@ class DB
  * @param $timeout 读取超时时间 
  * @return 读取到的文件内容 | false - 读取失败
  */
-function file_read_safe($file, $timeout = 5) {
+function file_read_safe($file, $timeout = 5)
+{
     if (!$file || !file_exists($file)) return false;
     $fp = @fopen($file, 'r');
     if (!$fp) return false;
     $startTime = microtime(true);
-    
+
     // 在指定时间内完成对文件的独占锁定
     do {
         $locked = flock($fp, LOCK_EX | LOCK_NB);
         if (!$locked) {
             usleep(mt_rand(1, 50) * 1000);     // 随机等待1~50ms再试
         }
-    }
-    while ((!$locked) && ((microtime(true) - $startTime) < $timeout));
-    
+    } while ((!$locked) && ((microtime(true) - $startTime) < $timeout));
+
     if ($locked && filesize($file) >= 0) {
         $result = @fread($fp, filesize($file));
         flock($fp, LOCK_UN);
@@ -326,7 +340,7 @@ function file_read_safe($file, $timeout = 5) {
         return false;
     }
 }
- 
+
 /**
  * 安全写文件，避免并发下写入数据为空
  * 
@@ -335,38 +349,38 @@ function file_read_safe($file, $timeout = 5) {
  * @param $timeout 写入超时时间 
  * @return 写入的字符数 | false - 写入失败
  */
-function file_write_safe($file, $buffer, $timeout = 5) {
+function file_write_safe($file, $buffer, $timeout = 5)
+{
     clearstatcache();
     if (strlen($file) == 0 || !$file) return false;
-    
+
     // 文件不存在则创建
     if (!file_exists($file)) {
         @file_put_contents($file, '');
     }
-    if(!is_writeable($file)) return false;    // 不可写
-    
+    if (!is_writeable($file)) return false;    // 不可写
+
     // 在指定时间内完成对文件的独占锁定
     $fp = fopen($file, 'r+');
     $startTime = microtime(true);
     do {
-        $locked = flock($fp, LOCK_EX); 
+        $locked = flock($fp, LOCK_EX);
         if (!$locked) {
             usleep(mt_rand(1, 50) * 1000);   // 随机等待1~50ms再试
         }
-    }
-    while ((!$locked) && ((microtime(true) - $startTime) < $timeout));    
-    
+    } while ((!$locked) && ((microtime(true) - $startTime) < $timeout));
+
     if ($locked) {
-        $tempFile = $file.'.temp';
+        $tempFile = $file . '.temp';
         $result = file_put_contents($tempFile, $buffer, LOCK_EX);
-        
+
         if (!$result || !file_exists($tempFile)) {
             flock($fp, LOCK_UN);
             fclose($fp);
             return false;
         }
         @unlink($tempFile);
-        
+
         ftruncate($fp, 0);
         rewind($fp);
         $result = fwrite($fp, $buffer);
